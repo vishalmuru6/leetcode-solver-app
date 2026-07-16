@@ -1,0 +1,32 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.env
+
+# Databases & runtime cache
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Sensitive files
+*.enc
+*.key
+
+# Redis runtime
+redis/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor / AI tooling junk
+.claude
+
+# JSON - ignore all except workflows
+*.json
+!leetcode_solver_app.json
+!n8n workflow/*.json

@@ -1,0 +1,213 @@
+# LeetCode Solver App Configuration
+# This file contains project-wide settings and configurations
+
+# Application Settings
+app:
+  name: "LeetCode Solver App"
+  version: "1.0.0"
+  description: "Automated LeetCode daily challenge solver with multi-user support"
+  environment: "production"
+  debug: false
+
+# Server Configuration
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false
+  workers: 1
+  timeout: 300
+  access_log: true
+  server_header: false
+  date_header: false
+  loop: "asyncio"
+  http: "auto"
+  ws: "auto"
+
+# Security Settings
+security:
+  secret_key: "your-secret-key-here-change-in-production"
+  jwt_expiry_minutes: 60
+  aes_key: "your-32-byte-aes-key-here-change-in-production"
+  max_login_attempts: 999999
+  lockout_minutes: 0
+
+# CORS Configuration
+cors:
+  origins:
+    - "http://localhost:3000"
+    - "http://127.0.0.1:3000"
+    - "http://localhost:8080"
+  allow_credentials: true
+  allow_methods:
+    - "GET"
+    - "POST"
+    - "OPTIONS"
+  allow_headers:
+    - "Authorization"
+    - "Content-Type"
+
+# SQLite Cache Configuration
+cache:
+  db_path: "./data/cache.db"
+  use_memory_db: false
+  default_ttl: 86400  # 24 hours
+  max_memory_items: 1000
+  cleanup_interval: 3600  # 1 hour
+  daily_solution_ttl: 86400  # 24 hours
+  user_session_ttl: 3600     # 1 hour
+  refresh_hour: 6            # 6 AM IST
+  refresh_minute: 0
+
+# N8N Integration
+n8n:
+  base_url: "http://localhost:5678"
+  trigger_path: "/webhook/solve-daily"
+  fetch_path: "/webhook/leetcode-code"
+  validate_path: "/webhook/validate-solution"
+  status_path: "/webhook/status"
+  api_key: ""
+  timeout: 120
+  max_retries: 3
+  retry_delay: 2.0
+
+# Selenium Configuration
+selenium:
+  timeout: 30
+  implicit_wait: 10
+  page_load_timeout: 60
+  chrome_options:
+    - "--no-sandbox"
+    - "--disable-dev-shm-usage"
+    - "--disable-gpu"
+    - "--window-size=1920,1080"
+    - "--disable-blink-features=AutomationControlled"
+  stealth_mode: true
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+# LeetCode URLs
+leetcode:
+  base_url: "https://leetcode.com"
+  login_url: "https://leetcode.com/accounts/login/"
+  problems_url: "https://leetcode.com/problemset/all/"
+  daily_challenge_selector: "a[href*='daily']"
+
+# User Management
+user_management:
+  max_concurrent_users: 50
+  session_timeout: 3600     # 1 hour
+  cleanup_interval: 300     # 5 minutes
+  max_connections_per_user: 3
+
+# WebSocket Configuration
+websocket:
+  ping_interval: 30
+  connection_timeout: 300   # 5 minutes
+  max_message_queue_size: 50
+  heartbeat_interval: 60
+
+# Rate Limiting
+rate_limiting:
+  per_minute: 999999
+  burst_limit: 999999
+  enabled: false
+  storage: "redis"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/leetcode_solver.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  handlers:
+    - "console"
+    - "file"
+
+# Monitoring and Health Checks
+monitoring:
+  health_check_interval: 30
+  metrics_enabled: true
+  performance_tracking: true
+  error_reporting: true
+
+# Automation Settings
+automation:
+  typing_delay: 0.02        # Seconds between keystrokes
+  click_delay: 0.5          # Seconds after clicking
+  human_like_delays: true
+  screenshot_on_error: true
+  max_retry_attempts: 3
+
+# Language Settings
+language:
+  default: "python3"
+  supported:
+    - "python3"
+    - "java"
+    - "cpp"
+    - "javascript"
+    - "python"
+
+# Error Handling
+error_handling:
+  max_error_reports_per_user: 10
+  error_cooldown_minutes: 5
+  auto_retry_on_failure: true
+  fallback_solutions: true
+
+# Performance Settings
+performance:
+  enable_gzip: true
+  static_file_cache: 3600
+  database_pool_size: 10
+  connection_pool_size: 20
+  async_workers: 4
+
+# Feature Flags
+features:
+  solution_validation: true
+  automatic_retries: true
+  progress_tracking: true
+  user_statistics: true
+  health_monitoring: true
+  rate_limiting: false
+  caching: true
+  websocket_support: true
+  multi_user_support: true
+  fallback_solutions: true
+
+# Development Settings (only used when debug=true)
+development:
+  auto_reload: true
+  detailed_errors: true
+  sql_echo: false
+  cors_all_origins: false
+  mock_selenium: false
+  mock_n8n: false
+
+# Backup and Recovery
+backup:
+  enabled: false
+  interval_hours: 24
+  retention_days: 7
+  backup_location: "./backups"
+  include_logs: true
+
+# Notifications (future enhancement)
+notifications:
+  enabled: false
+  email_on_failure: false
+  slack_webhook: ""
+  discord_webhook: ""
+
+# API Documentation
+api_docs:
+  title: "LeetCode Solver API"
+  description: "Automated LeetCode solving service with multi-user support"
+  version: "1.0.0"
+  contact:
+    name: "Development Team"
+    email: "support@leetcode-solver.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"

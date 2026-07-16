@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - LeetCode Auto-Solver</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .about-container:hover {
+            filter: brightness(1.02);
+        }
+        
+        .about-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            gap: 1rem;
+        }
+        
+        .back-btn {
+            background: transparent;
+            border: 1px solid #00d2d3;
+            color: #00d2d3;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 210, 211, 0.15);
+            transform: translateX(-5px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 210, 211, 0.2);
+        }
+        
+        .about-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d2d3 0%, #ffa726 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.4s ease;
+            cursor: default;
+        }
+        
+        .about-title:hover {
+            transform: translateY(-3px) scale(1.02);
+            filter: drop-shadow(0 0 20px rgba(0, 210, 211, 0.5)) drop-shadow(0 0 40px rgba(255, 167, 38, 0.3));
+            background: linear-gradient(135deg, #4dffff 0%, #ffcc02 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            border-color: rgba(0, 210, 211, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 210, 211, 0.2);
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00d2d3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .tech-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tech-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .tech-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 210, 211, 0.2);
+            border-color: rgba(0, 210, 211, 0.3) !important;
+        }
+        
+        .tech-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tech-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 12px 35px rgba(255, 167, 38, 0.15);
+            border-color: rgba(255, 167, 38, 0.2) !important;
+        }
+        
+        /* Enhanced About Section Hover Effects */
+        .section:first-child {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section:first-child::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 167, 38, 0.08), transparent);
+            transition: left 0.8s ease;
+            z-index: 0;
+        }
+        
+        .section:first-child:hover::before {
+            left: 100%;
+        }
+        
+        .section:first-child:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(255, 167, 38, 0.2);
+            border-color: rgba(255, 167, 38, 0.3) !important;
+        }
+        
+        .section:first-child h2 {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section:first-child:hover h2 {
+            transform: translateY(-4px);
+            text-shadow: 0 0 15px rgba(255, 167, 38, 0.5);
+            color: #ffb74d;
+        }
+        
+        .section:first-child:hover h2 .material-icons {
+            transform: scale(1.3) rotate(360deg);
+            color: #ffa726;
+            text-shadow: 0 0 15px rgba(255, 167, 38, 0.8);
+        }
+        
+        .section:first-child p {
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section:first-child:hover p {
+            color: #e8eaf0;
+            transform: translateY(-2px);
+        }
+        
+        /* Enhanced badges hover */
+        .badges {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .badge {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .badge:hover::before {
+            left: 100%;
+        }
+        
+        .badge.primary:hover {
+            background: linear-gradient(135deg, #00d2d3, #4dffff) !important;
+            box-shadow: 0 10px 30px rgba(0, 210, 211, 0.5);
+            transform: translateY(-4px) scale(1.15) rotate(2deg);
+        }
+        
+        .badge.secondary:hover {
+            background: linear-gradient(135deg, #ffa726, #ffcc02) !important;
+            box-shadow: 0 10px 30px rgba(255, 167, 38, 0.5);
+            transform: translateY(-4px) scale(1.15) rotate(-2deg);
+        }
+        
+        .badge.success:hover {
+            background: linear-gradient(135deg, #4caf50, #81c784) !important;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.5);
+            transform: translateY(-4px) scale(1.15) rotate(2deg);
+        }
+        
+        .badge.info:hover {
+            background: linear-gradient(135deg, #2196f3, #64b5f6) !important;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.5);
+            transform: translateY(-4px) scale(1.15) rotate(-2deg);
+        }
+        
+        .badge.warning:hover {
+            background: linear-gradient(135deg, #ff9800, #ffb74d) !important;
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.5);
+            transform: translateY(-4px) scale(1.15) rotate(2deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Parallax Background -->
+    <div class="parallax-background">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+        <div class="floating-orb orb-4"></div>
+        <div class="geometric-shape shape-1"></div>
+        <div class="geometric-shape shape-2"></div>
+        <div class="grid-overlay"></div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <div class="about-container">
+        <!-- Header -->
+        <div class="about-header">
+            <a href="index.html" class="back-btn">
+                <span class="material-icons">arrow_back</span>
+                Back to Login
+            </a>
+            <h1 class="about-title">LeetCode Auto-Solver - Project Overview</h1>
+        </div>
+
+        <!-- Project Description -->
+        <div class="section">
+            <h2 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <span class="material-icons">info</span>
+                About This Project
+            </h2>
+            <p style="font-size: 1.2rem; color: #b0bec5; line-height: 1.6; margin-bottom: 2rem;">
+                An enterprise-grade automated LeetCode daily challenge solver built with modern 
+                technologies and PRD-compliant architecture. Features Redis caching, N8N workflow 
+                automation, Selenium stealth automation, AES-256 encryption, and multi-user support.
+            </p>
+            <div class="badges">
+                <span class="badge primary">PRD Compliant v1.0</span>
+                <span class="badge secondary">Production Ready</span>
+                <span class="badge success">Multi-User</span>
+                <span class="badge info">High Performance</span>
+                <span class="badge warning">Secure</span>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="section">
+            <h2 style="margin-bottom: 2rem;">System Performance</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">&lt;100ms</div>
+                    <h3>Response Time</h3>
+                    <p style="color: #b0bec5; font-size: 0.9rem;">For cached requests</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">AES-256</div>
+                    <h3>Encryption</h3>
+                    <p style="color: #b0bec5; font-size: 0.9rem;">Military-grade security</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6:00 AM IST</div>
+                    <h3>Daily Refresh</h3>
+                    <p style="color: #b0bec5; font-size: 0.9rem;">Automated challenge solving</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100+</div>
+                    <h3>Concurrent Users</h3>
+                    <p style="color: #b0bec5; font-size: 0.9rem;">Multi-user support</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Features -->
+        <div class="section">
+            <h2 style="margin-bottom: 2rem; transition: all 0.3s ease; cursor: default;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 15px rgba(0, 210, 211, 0.4)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">Core Features</h2>
+            <div class="features-list">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span class="material-icons">settings</span>
+                    </div>
+                    <h3 style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 10px rgba(77, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">N8N Workflow Automation</h3>
+                    <p style="margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.color='#d0d4d8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.color=''; this.style.transform=''">Automated daily challenge solving using <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#ffa726'; this.style.textShadow='0 0 8px rgba(255, 167, 38, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">N8N workflows</span> with <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 8px rgba(77, 255, 255, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">fallback mechanisms</span></p>
+                    <ul style="color: #b0bec5; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">PRD-compliant workflow triggers<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Multiple endpoint redundancy<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Comprehensive error handling<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Automatic retry logic<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span class="material-icons">cached</span>
+                    </div>
+                    <h3 style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 10px rgba(77, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">Redis Cache System</h3>
+                    <p style="margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.color='#d0d4d8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.color=''; this.style.transform=''">High-performance caching with <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4caf50'; this.style.textShadow='0 0 8px rgba(76, 175, 80, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">sub-100ms</span> response times</p>
+                    <ul style="color: #b0bec5; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Redis-backed cache storage<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Daily refresh at 6:00 AM IST<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Cache miss recovery<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Performance monitoring<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span class="material-icons">lock</span>
+                    </div>
+                    <h3 style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 10px rgba(77, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">Security & Authentication</h3>
+                    <p style="margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.color='#d0d4d8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.color=''; this.style.transform=''">Enterprise-grade security with <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#f44336'; this.style.textShadow='0 0 8px rgba(244, 67, 54, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">AES-256 encryption</span></p>
+                    <ul style="color: #b0bec5; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">AES-256-GCM encryption<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">JWT token authentication<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Redis-based rate limiting<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Secure credential handling<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span class="material-icons">smart_toy</span>
+                    </div>
+                    <h3 style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 10px rgba(77, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">Selenium Stealth Automation</h3>
+                    <p style="margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.color='#d0d4d8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.color=''; this.style.transform=''">Advanced web automation with <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#9c27b0'; this.style.textShadow='0 0 8px rgba(156, 39, 176, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">anti-detection</span> capabilities</p>
+                    <ul style="color: #b0bec5; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Selenium WebDriver automation<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Stealth mode anti-detection<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Dynamic element waiting<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Chrome headless execution<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span class="material-icons">api</span>
+                    </div>
+                    <h3 style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 10px rgba(77, 255, 255, 0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">Multi-User FastAPI Backend</h3>
+                    <p style="margin-bottom: 1rem; transition: all 0.3s ease;" onmouseover="this.style.color='#d0d4d8'; this.style.transform='translateY(-1px)'" onmouseout="this.style.color=''; this.style.transform=''">Scalable backend supporting <span style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.color='#2196f3'; this.style.textShadow='0 0 8px rgba(33, 150, 243, 0.4)'" onmouseout="this.style.color=''; this.style.textShadow=''">concurrent users</span></p>
+                    <ul style="color: #b0bec5; font-size: 0.9rem; list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">FastAPI with async support<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">Multi-user session management<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="margin-bottom: 0.5rem; transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">WebSocket real-time updates<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                        <li style="transition: all 0.3s ease; position: relative; cursor: pointer; padding-left: 20px;" onmouseover="this.style.transform='translateX(8px)'; this.style.color='#e0e0e0'; this.querySelector('.checkmark').style.opacity='1'; this.querySelector('.checkmark').style.transform='scale(1.2)'" onmouseout="this.style.transform=''; this.style.color='#b0bec5'; this.querySelector('.checkmark').style.opacity='0'; this.querySelector('.checkmark').style.transform='scale(0)'">RESTful API endpoints<span class="checkmark" style="position: absolute; left: 0px; color: #00d2d3; font-weight: bold; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">✓</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Architecture -->
+        <div class="section">
+            <h2 style="margin-bottom: 2rem;">System Architecture</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>Frontend (HTML/CSS/JS)</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">Modern web application with professional UI and parallax effects</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">HTML5</span>
+                        <span class="tech-tag">CSS3</span>
+                        <span class="tech-tag">Vanilla JavaScript</span>
+                        <span class="tech-tag">Material Icons</span>
+                        <span class="tech-tag">Responsive Design</span>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <h3>Backend (FastAPI)</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">High-performance Python backend with async support</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">FastAPI</span>
+                        <span class="tech-tag">Pydantic</span>
+                        <span class="tech-tag">Asyncio</span>
+                        <span class="tech-tag">JWT</span>
+                        <span class="tech-tag">Rate Limiting</span>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <h3>Cache Layer (Redis)</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">In-memory data structure store for caching and session management</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Redis 6+</span>
+                        <span class="tech-tag">Connection Pooling</span>
+                        <span class="tech-tag">TTL Management</span>
+                        <span class="tech-tag">Pub/Sub</span>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <h3>Automation (N8N)</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">Workflow automation platform for LeetCode challenge solving</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">N8N Workflows</span>
+                        <span class="tech-tag">Webhook Triggers</span>
+                        <span class="tech-tag">Error Handling</span>
+                        <span class="tech-tag">Fallbacks</span>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <h3>Web Automation (Selenium)</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">Advanced browser automation with stealth capabilities for LeetCode interaction</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">Selenium WebDriver</span>
+                        <span class="tech-tag">Selenium Stealth</span>
+                        <span class="tech-tag">Anti-Detection</span>
+                        <span class="tech-tag">Chrome Headless</span>
+                        <span class="tech-tag">Dynamic Waiting</span>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <h3>Security Layer</h3>
+                    <p style="color: #b0bec5; margin-bottom: 1rem;">Comprehensive security implementation</p>
+                    <div class="tech-list">
+                        <span class="tech-tag">AES-256 Encryption</span>
+                        <span class="tech-tag">JWT Tokens</span>
+                        <span class="tech-tag">Rate Limiting</span>
+                        <span class="tech-tag">CORS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="section">
+            <h2 style="margin-bottom: 2rem; transition: all 0.3s ease; cursor: default;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 15px rgba(0, 210, 211, 0.4)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">API Endpoints</h2>
+            <div style="display: grid; gap: 1rem; transition: all 0.3s ease;" onmouseover="this.style.gap='1.2rem'" onmouseout="this.style.gap='1rem'">
+                <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; border-left: 4px solid #00d2d3; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" onmouseover="this.style.transform='translateX(12px) scale(1.03)'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.boxShadow='0 8px 25px rgba(0, 210, 211, 0.3), inset 0 1px 0 rgba(0, 210, 211, 0.2)'; this.style.borderLeftColor='#4dffff'" onmouseout="this.style.transform=''; this.style.background='rgba(255, 255, 255, 0.03)'; this.style.boxShadow=''; this.style.borderLeftColor='#00d2d3'">
+                    <strong style="transition: all 0.4s ease; cursor: pointer;" onmouseover="this.style.color='#4dffff'; this.style.textShadow='0 0 15px rgba(0, 210, 211, 0.8)'; this.style.transform='translateX(8px) scale(1.05)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">POST /solve-daily</strong> - <span style="transition: all 0.3s ease;" onmouseover="this.style.color='#e8eaf0'; this.style.letterSpacing='0.5px'" onmouseout="this.style.color=''; this.style.letterSpacing=''">Submit LeetCode credentials and solve daily challenge</span>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; border-left: 4px solid #4caf50; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" onmouseover="this.style.transform='translateX(12px) scale(1.03)'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.boxShadow='0 8px 25px rgba(76, 175, 80, 0.3), inset 0 1px 0 rgba(76, 175, 80, 0.2)'; this.style.borderLeftColor='#81c784'" onmouseout="this.style.transform=''; this.style.background='rgba(255, 255, 255, 0.03)'; this.style.boxShadow=''; this.style.borderLeftColor='#4caf50'">
+                    <strong style="transition: all 0.4s ease; cursor: pointer;" onmouseover="this.style.color='#81c784'; this.style.textShadow='0 0 15px rgba(76, 175, 80, 0.8)'; this.style.transform='translateX(8px) scale(1.05)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">GET /health</strong> - <span style="transition: all 0.3s ease;" onmouseover="this.style.color='#e8eaf0'; this.style.letterSpacing='0.5px'" onmouseout="this.style.color=''; this.style.letterSpacing=''">System health check with component status</span>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; border-left: 4px solid #ffa726; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" onmouseover="this.style.transform='translateX(12px) scale(1.03)'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.boxShadow='0 8px 25px rgba(255, 167, 38, 0.3), inset 0 1px 0 rgba(255, 167, 38, 0.2)'; this.style.borderLeftColor='#ffcc02'" onmouseout="this.style.transform=''; this.style.background='rgba(255, 255, 255, 0.03)'; this.style.boxShadow=''; this.style.borderLeftColor='#ffa726'">
+                    <strong style="transition: all 0.4s ease; cursor: pointer;" onmouseover="this.style.color='#ffcc02'; this.style.textShadow='0 0 15px rgba(255, 167, 38, 0.8)'; this.style.transform='translateX(8px) scale(1.05)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">GET /system/status</strong> - <span style="transition: all 0.3s ease;" onmouseover="this.style.color='#e8eaf0'; this.style.letterSpacing='0.5px'" onmouseout="this.style.color=''; this.style.letterSpacing=''">Comprehensive system status and metrics</span>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; border-left: 4px solid #9c27b0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" onmouseover="this.style.transform='translateX(12px) scale(1.03)'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.boxShadow='0 8px 25px rgba(156, 39, 176, 0.3), inset 0 1px 0 rgba(156, 39, 176, 0.2)'; this.style.borderLeftColor='#ba68c8'" onmouseout="this.style.transform=''; this.style.background='rgba(255, 255, 255, 0.03)'; this.style.boxShadow=''; this.style.borderLeftColor='#9c27b0'">
+                    <strong style="transition: all 0.4s ease; cursor: pointer;" onmouseover="this.style.color='#ba68c8'; this.style.textShadow='0 0 15px rgba(156, 39, 176, 0.8)'; this.style.transform='translateX(8px) scale(1.05)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">GET /cache/stats</strong> - <span style="transition: all 0.3s ease;" onmouseover="this.style.color='#e8eaf0'; this.style.letterSpacing='0.5px'" onmouseout="this.style.color=''; this.style.letterSpacing=''">Redis cache statistics and performance</span>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; border-left: 4px solid #f44336; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;" onmouseover="this.style.transform='translateX(12px) scale(1.03)'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.boxShadow='0 8px 25px rgba(244, 67, 54, 0.3), inset 0 1px 0 rgba(244, 67, 54, 0.2)'; this.style.borderLeftColor='#ef5350'" onmouseout="this.style.transform=''; this.style.background='rgba(255, 255, 255, 0.03)'; this.style.boxShadow=''; this.style.borderLeftColor='#f44336'">
+                    <strong style="transition: all 0.4s ease; cursor: pointer;" onmouseover="this.style.color='#ef5350'; this.style.textShadow='0 0 15px rgba(244, 67, 54, 0.8)'; this.style.transform='translateX(8px) scale(1.05)'" onmouseout="this.style.color=''; this.style.textShadow=''; this.style.transform=''">GET /n8n/health</strong> - <span style="transition: all 0.3s ease;" onmouseover="this.style.color='#e8eaf0'; this.style.letterSpacing='0.5px'" onmouseout="this.style.color=''; this.style.letterSpacing=''">N8N workflow status and connectivity</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer CTA -->
+        <div class="section" style="text-align: center; background: rgba(255, 255, 255, 0.03);">
+            <h2 style="margin-bottom: 1rem;">Ready to Automate Your LeetCode Journey?</h2>
+            <p style="color: #b0bec5; margin-bottom: 2rem; font-size: 1.1rem;">
+                Experience the power of automated daily challenge solving with enterprise-grade 
+                performance and security.
+            </p>
+            <a href="index.html" style="background: linear-gradient(135deg, #00d2d3, #009fa1); color: white; padding: 1rem 2rem; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 10px 30px rgba(0, 210, 211, 0.4)'; this.style.background='linear-gradient(135deg, #00a8a9, #007f80)'" onmouseout="this.style.transform=''; this.style.boxShadow=''; this.style.background='linear-gradient(135deg, #00d2d3, #009fa1)'"">
+                <span class="material-icons">code</span>
+                Get Started Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Scroll animations with Intersection Observer for about page
+        function initScrollAnimations() {
+            // Only animate about header immediately on load
+            const aboutHeader = document.querySelector('.about-header');
+            
+            if (aboutHeader) {
+                aboutHeader.classList.add('scroll-animate', 'slide-from-left');
+                setTimeout(() => {
+                    aboutHeader.classList.add('animate-in');
+                }, 100);
+            }
+
+            // Set up observer for ALL sections (they all animate on scroll now)
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -10% 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const element = entry.target;
+                        const delay = element.dataset.delay || 0;
+                        
+                        setTimeout(() => {
+                            element.classList.add('animate-in');
+                        }, delay);
+                        
+                        observer.unobserve(element);
+                    }
+                });
+            }, observerOptions);
+
+            // Get ALL sections - they all animate from sides when scrolling
+            const allSections = document.querySelectorAll('.section');
+            
+            // Other elements that should animate on scroll
+            const scrollAnimatedElements = [
+                '.stat-card',
+                '.feature-card', 
+                '.tech-card',
+                '.floating-orb',
+                '.geometric-shape',
+                '.badge'
+            ];
+
+            // Add all sections to be observed with alternating side animations
+            allSections.forEach((section, index) => {
+                section.classList.add('scroll-animate');
+                // Alternate between left and right sides
+                if (index % 2 === 0) {
+                    section.classList.add('slide-from-right'); // Even index from right
+                } else {
+                    section.classList.add('slide-from-left'); // Odd index from left
+                }
+                section.dataset.delay = 0; // No delay for sections
+                observer.observe(section);
+            });
+
+            // Add other elements to be observed
+            scrollAnimatedElements.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach((element, index) => {
+                    element.classList.add('scroll-animate');
+                    
+                    if (elements.length > 1) {
+                        element.dataset.delay = index * 50;
+                    }
+                    
+                    observer.observe(element);
+                });
+            });
+        }
+
+        // Enhanced parallax effect for about page
+        function initParallax() {
+            const orbs = document.querySelectorAll('.floating-orb');
+            const shapes = document.querySelectorAll('.geometric-shape');
+            const sections = document.querySelectorAll('.section');
+            
+            let ticking = false;
+            
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const windowHeight = window.innerHeight;
+                const rate = scrolled * -0.3;
+                
+                orbs.forEach((orb, index) => {
+                    const speed = (index + 1) * 0.2;
+                    const yOffset = rate * speed;
+                    orb.style.transform = `translateY(${yOffset}px) scale(${1 + scrolled * 0.0001})`;
+                });
+                
+                shapes.forEach((shape, index) => {
+                    const speed = (index + 1) * 0.15;
+                    const yOffset = rate * speed;
+                    const rotation = 45 + scrolled * 0.1;
+                    shape.style.transform = `translateY(${yOffset}px) rotate(${rotation}deg)`;
+                });
+                
+                // Subtle section animations
+                sections.forEach((section, index) => {
+                    const sectionTop = section.getBoundingClientRect().top;
+                    const sectionInView = sectionTop < windowHeight && sectionTop > -section.offsetHeight;
+                    
+                    if (sectionInView) {
+                        const parallaxStrength = (windowHeight - sectionTop) / windowHeight;
+                        const translateY = parallaxStrength * 5;
+                        section.style.transform = `translateY(${translateY}px)`;
+                    }
+                });
+                
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', requestTick);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initParallax();
+            initScrollAnimations();
+        });
+    </script>
+</body>
+</html>

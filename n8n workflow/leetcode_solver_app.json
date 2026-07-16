@@ -1,0 +1,671 @@
+{
+  "name": "leetcode_solver_app",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://leetcode.com/graphql",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"content-Type\":\"application/json\"\n}\n",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"query questionData($titleSlug: String!) { question(titleSlug: $titleSlug) { title content difficulty codeSnippets { lang code } } }\",\n  \"variables\": {\n    \"titleSlug\": \"{{ $('Fetch Daily Challenge').item.json.data.activeDailyCodingChallengeQuestion.question.titleSlug }}\"\n  }\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        112
+      ],
+      "id": "01fdf118-128c-41a7-b0f4-6ddae32d0053",
+      "name": "Get Full Problem Content"
+    },
+    {
+      "parameters": {
+        "jsCode": "const q = $json.data.activeDailyCodingChallengeQuestion.question;\nreturn [{\n  title: q.title,\n  slug: q.titleSlug,\n  difficulty: q.difficulty\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        112
+      ],
+      "id": "663d1bfd-1885-4f55-ad2a-0b61e9737c47",
+      "name": "Extract Challenge Info"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://leetcode.com/graphql",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Referer",
+              "value": "=https://leetcode.com/problems/{{ $json.slug }}/"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"\\nquery questionContent($titleSlug: String!) {\\n  question(titleSlug: $titleSlug) {\\n    exampleTestcases\\n    sampleTestCase\\n    codeSnippets {\\n      lang\\n      code\\n    }\\n  }\\n}\\n\",\n  \"variables\": {\n    \"titleSlug\": \"{{ $json.slug }}\"\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        112
+      ],
+      "id": "439f12b7-2e33-42fd-afd6-c1d655005cf2",
+      "name": "Fetch Test Cases"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://leetcode.com/graphql",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}\n",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"query questionOfToday { activeDailyCodingChallengeQuestion { question { titleSlug title difficulty questionId } } }\"\n}\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        608,
+        112
+      ],
+      "id": "ce06304d-b293-4a6a-9e74-e3119f8e3b06",
+      "name": "Fetch Daily Challenge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://emkc.org/api/v2/piston/execute",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1088,
+        528
+      ],
+      "id": "9f2553d5-3460-44ee-9c84-01d72131cd40",
+      "name": "Run on Piston"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://emkc.org/api/v2/piston/execute",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"language\": \"python3\",\n  \"version\": \"3.10.0\",\n  \"files\": [\n    {\n      \"name\": \"main.py\",\n      \"content\": {{ $('patch function name').first().json.code.toJsonString() }}\n    }\n  ],\n  \"stdin\": \"\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        528
+      ],
+      "id": "7f4067fc-0c3f-407d-8b45-5738f6548438",
+      "name": "Prepare piston payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputs = $input.all().map((item) => item.json);\nconst code = $(\"python patch imports\").all()[0]?.json?.code;\nconst expectedOutput = $(\"Extract Expected Output\").all()[0]?.json\n  ?.expectedOutput;\n\nconst payload = inputs.map((input) => {\n  return {\n    language: input.language,\n    version: input.version,\n    files: [\n      {\n        name: \"main.py\",\n        content: code,\n      },\n    ],\n    stdin: expectedOutput,\n    run: input.run,\n  };\n});\n\nreturn payload;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        528
+      ],
+      "id": "f670a107-4bc3-4c6a-836b-a15ba6d0dc13",
+      "name": "Build piston payload"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawOutput = $json.run?.output?.trim() || $json.run?.stdout?.trim() || '';\nconst stderr = $json.run?.stderr?.trim() || '';\nconst actual = rawOutput.trim();\nconst expectedRaw = $('Extract Expected Output').first()?.json?.expectedOutput?.trim() || '';\n\nlet passed = false;\nlet normalizedActual = actual;\nlet normalizedExpected = expectedRaw;\nlet errorMessage = '';\n\n// Check for runtime errors first\nif (stderr && stderr.length > 0) {\n    return [\n        {\n            json: {\n                passed: false,\n                output: actual,\n                expected: expectedRaw,\n                error: stderr,\n                status: '❌ Runtime Error'\n            }\n        }\n    ];\n}\n\n// Check for empty output\nif (!actual || actual.length === 0) {\n    return [\n        {\n            json: {\n                passed: false,\n                output: 'No output',\n                expected: expectedRaw,\n                status: '❌ No Output'\n            }\n        }\n    ];\n}\n\ntry {\n    // Try parsing as JSON first (for lists, objects, etc.)\n    const actualParsed = JSON.parse(actual);\n    const expectedParsed = JSON.parse(expectedRaw);\n\n    if (Array.isArray(actualParsed) && Array.isArray(expectedParsed)) {\n        // Handle arrays - check length and elements\n        if (actualParsed.length !== expectedParsed.length) {\n            passed = false;\n        } else {\n            // Deep comparison for arrays\n            passed = actualParsed.every((val, i) => {\n                if (Array.isArray(val) && Array.isArray(expectedParsed[i])) {\n                    return JSON.stringify(val) === JSON.stringify(expectedParsed[i]);\n                }\n                return val == expectedParsed[i]; // Use loose equality for type flexibility\n            });\n        }\n        normalizedActual = JSON.stringify(actualParsed);\n        normalizedExpected = JSON.stringify(expectedParsed);\n        \n    } else if (typeof actualParsed === 'object' && typeof expectedParsed === 'object') {\n        // Handle objects - deep comparison\n        passed = JSON.stringify(actualParsed) === JSON.stringify(expectedParsed);\n        normalizedActual = JSON.stringify(actualParsed);\n        normalizedExpected = JSON.stringify(expectedParsed);\n        \n    } else {\n        // Handle primitives (numbers, booleans, strings)\n        passed = actualParsed == expectedParsed; // Loose equality\n        normalizedActual = String(actualParsed);\n        normalizedExpected = String(expectedParsed);\n    }\n    \n} catch (err) {\n    // JSON parsing failed, try other comparisons\n    \n    // Try parsing as numbers\n    const actualNum = parseFloat(actual);\n    const expectedNum = parseFloat(expectedRaw);\n    \n    if (!isNaN(actualNum) && !isNaN(expectedNum)) {\n        // Both are valid numbers - use epsilon comparison for floating point\n        const EPSILON = 1e-6;\n        passed = Math.abs(actualNum - expectedNum) < EPSILON;\n        normalizedActual = actualNum.toString();\n        normalizedExpected = expectedNum.toString();\n        \n    } else if (actual.toLowerCase() === expectedRaw.toLowerCase()) {\n        // Case-insensitive string comparison\n        passed = true;\n        normalizedActual = actual;\n        normalizedExpected = expectedRaw;\n        \n    } else {\n        // Exact string comparison as fallback\n        passed = actual === expectedRaw;\n        normalizedActual = actual;\n        normalizedExpected = expectedRaw;\n    }\n}\n\n// Additional checks for common LeetCode edge cases\nif (!passed) {\n    // Check if output contains the expected value (sometimes there's extra text)\n    if (actual.includes(expectedRaw) || expectedRaw.includes(actual)) {\n        // Extract just the relevant part\n        const numberMatch = actual.match(/-?\\d+\\.?\\d*/);\n        const expectedMatch = expectedRaw.match(/-?\\d+\\.?\\d*/);\n        \n        if (numberMatch && expectedMatch && numberMatch[0] === expectedMatch[0]) {\n            passed = true;\n            normalizedActual = numberMatch[0];\n            normalizedExpected = expectedMatch[0];\n        }\n    }\n    \n    // Check for boolean string representations\n    const booleanMap = {\n        'true': 'True', 'True': 'true',\n        'false': 'False', 'False': 'false'\n    };\n    \n    if (booleanMap[actual] === expectedRaw || booleanMap[expectedRaw] === actual) {\n        passed = true;\n        normalizedActual = actual;\n        normalizedExpected = expectedRaw;\n    }\n}\n\nreturn [\n    {\n        json: {\n            passed,\n            output: normalizedActual,\n            expected: normalizedExpected,\n            status: passed ? '✅ Passed' : '❌ Failed',\n            debug: {\n                rawOutput: actual,\n                rawExpected: expectedRaw,\n                hasStderr: stderr.length > 0,\n                stderr: stderr\n            }\n        }\n    }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        528
+      ],
+      "id": "61c1fbfa-77c9-4f82-9de4-bcb7b5a89b53",
+      "name": "Test Result Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst updatedItems = items.map((item) => {\n  const status = item.json.status?.toLowerCase() || '';\n  item.json.passed = status.includes(\"passed\");\n  return item;\n});\nreturn updatedItems;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        528
+      ],
+      "id": "87fe0f9e-f556-47ee-bb2d-282826026536",
+      "name": "Parse and test result from piston"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $json.data.question.content || '';\n\nconst outputRegex = /<strong>Output:<\\/strong>\\s*([\\s\\S]*?)<\\/?pre>/i;\nconst match = html.match(outputRegex);\n\nlet expectedOutput = '';\nif (match && match[1]) {\n  expectedOutput = match[1].trim().split('\\n')[0].trim();\n}\n\n// fallback or sanitize\nexpectedOutput = expectedOutput.replace(/<\\/?[^>]+(>|$)/g, '').trim();\n\nreturn [{\n  json: {\n    expectedOutput\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        112
+      ],
+      "id": "d4d8779d-3155-4a1d-8ca3-45ca24c595da",
+      "name": "Extract Expected Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const title = $('Extract Challenge Info').first()?.json?.title || 'Unknown Title';\nconst difficulty = $('Extract Challenge Info').first()?.json?.difficulty || 'Unknown';\nconst html = $('Get Full Problem Content').first()?.json?.data?.question?.content || 'No description provided.';\nconst expectedOutput = $('Extract Expected Output').first()?.json?.expectedOutput || '[]';\n\nconst codeSnippets = $('Fetch Test Cases').first()?.json?.data?.question?.codeSnippets || [];\nconst pythonSnippet = codeSnippets.find(snippet => snippet.lang === 'Python3')?.code || '';\n\nfunction extractFunctionSignature(codeTemplate) {\n  const lines = codeTemplate.split('\\n');\n  for (const line of lines) {\n    const trimmed = line.trim();\n    if (trimmed.startsWith('def ') && trimmed.includes('(')) {\n      const match = trimmed.match(/def\\s+(\\w+)\\s*\\([^)]*\\)(\\s*->\\s*[^:]+)?:/);\n      if (match) {\n        return {\n          signature: trimmed.replace(':', ''),\n          methodName: match[1],\n          fullLine: trimmed\n        };\n      }\n    }\n  }\n  return {\n    signature: 'def solve(self, ...)',\n    methodName: 'solve',\n    fullLine: 'def solve(self, ...):'\n  };\n}\n\nfunction extractExamples(html) {\n  const examples = [];\n  const exampleRegex = /<strong[^>]*>Example\\s*\\d*:?<\\/strong>([\\s\\S]*?)(?=<strong[^>]*>Example\\s*\\d|<strong[^>]*>Constraints|<strong[^>]*>Follow up|$)/gi;\n  let match;\n  \n  while ((match = exampleRegex.exec(html)) !== null) {\n    const exampleText = match[1]\n      .replace(/<\\/?[^>]+(>|$)/g, '')\n      .replace(/&lt;/g, '<')\n      .replace(/&gt;/g, '>')\n      .replace(/&amp;/g, '&')\n      .replace(/&quot;/g, '\"')\n      .trim();\n    \n    if (exampleText.length > 10) {\n      examples.push(exampleText);\n    }\n  }\n  \n  return examples;\n}\n\nfunction extractConstraints(html) {\n  const constraintsMatch = html.match(/<strong[^>]*>Constraints:?<\\/strong>([\\s\\S]*?)(?=<strong|$)/i);\n  if (constraintsMatch) {\n    return constraintsMatch[1]\n      .replace(/<\\/?[^>]+(>|$)/g, '')\n      .replace(/&lt;/g, '<')\n      .replace(/&gt;/g, '>')\n      .replace(/&amp;/g, '&')\n      .replace(/&quot;/g, '\"')\n      .trim();\n  }\n  return '';\n}\n\nconst textContent = html\n  .replace(/<pre[^>]*>[\\s\\S]*?<\\/pre>/gi, (match) => {\n    return '\\n[CODE_BLOCK]\\n' + match.replace(/<\\/?[^>]+(>|$)/gi, '')\n      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '\"') + '\\n[/CODE_BLOCK]\\n';\n  })\n  .replace(/<code[^>]*>(.*?)<\\/code>/gi, '`$1`')\n  .replace(/<strong[^>]*>(.*?)<\\/strong>/gi, '**$1**')\n  .replace(/<em[^>]*>(.*?)<\\/em>/gi, '*$1*')\n  .replace(/<br\\s*\\/?>/gi, '\\n')\n  .replace(/<\\/p>/gi, '\\n\\n')\n  .replace(/<li>/gi, '• ')\n  .replace(/<\\/li>/gi, '\\n')\n  .replace(/<\\/?[^>]+(>|$)/g, '')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .replace(/&lt;/g, '<')\n  .replace(/&gt;/g, '>')\n  .replace(/&amp;/g, '&')\n  .replace(/&quot;/g, '\"')\n  .trim();\n\nconst functionInfo = extractFunctionSignature(pythonSnippet);\nconst examples = extractExamples(html);\nconst constraints = extractConstraints(html);\n\nconst prompt = `GENERATE PYTHON CODE FOR LEETCODE AUTO-SUBMISSION. CODE MUST BE 100% ERROR-FREE.\n\nProblem: ${title} (${difficulty})\nFunction Signature: ${functionInfo.signature}\nStarter Template: ${pythonSnippet}\nDescription: ${textContent}\n${examples.length > 0 ? `Examples: ${examples.join(' ')}` : ''}\n${constraints ? `Constraints: ${constraints}` : ''}\n\nZERO TOLERANCE FOR ERRORS:\n- Syntax: perfect Python syntax with correct indentation\n- Runtime: no crashes, exceptions, or failures\n- Types: correct parameter and return types, proper conversions\n- Logic: fully correct algorithm\n- Edge Cases: handle empty inputs, None, negatives, zeros, large numbers\n- Indexing: proper bounds checking\n- Memory: efficient usage within constraints\n- Time: optimized for performance\n- Imports: only allowed libraries\n- Names: all variables properly defined\n- Output: production-ready, submission-ready code\n- Testing: code passes all example, hidden, and edge test cases\n- Formatting: no markdown, no comments, no explanations—raw Python code only\n- Analyze this code for time/space complexity issues, identify bottlenecks, and provide the most efficient optimized solution with complexity analysis.\n\nReturn the full Python code ready for submission immediately.`;\n\nreturn [\n  {\n    json: {\n      prompt\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        112
+      ],
+      "id": "936531ca-257c-44a8-b296-646c338e27f4",
+      "name": "send prompt to ai model"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4fbdb43c-1c92-4c09-9825-1cb2408b253e",
+              "name": "ProblemTitle",
+              "value": "={{ $('Extract Challenge Info').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "597ef52e-e188-438c-93c1-30abd3cd58b0",
+              "name": "language",
+              "value": "={{ $('Build piston payload').item.json.language }}",
+              "type": "string"
+            },
+            {
+              "id": "bc7c3803-3c18-48ab-baf1-25be5395c926",
+              "name": "solutionCode",
+              "value": "={{ $('python patch imports').item.json.code }}",
+              "type": "string"
+            },
+            {
+              "id": "5b81f5cb-6672-45ab-a8a0-3154dcfef613",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1840,
+        528
+      ],
+      "id": "7c58e1f2-e487-4acf-b6a6-2d082ab72fc8",
+      "name": "get submission info"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle both OpenAI and Gemini response formats\nlet rawCode = '';\n\n// Try different possible response structures\nif ($json.content && $json.content.parts && $json.content.parts[0] && $json.content.parts[0].text) {\n    // Gemini format\n    rawCode = $json.content.parts[0].text;\n} else if ($json.content) {\n    // OpenAI format (simple content)\n    rawCode = $json.content;\n} else if ($json.message && $json.message.content) {\n    // OpenAI format (message.content)\n    rawCode = $json.message.content;\n} else if ($json.text) {\n    // Generic text field\n    rawCode = $json.text;\n} else {\n    // Fallback: stringify and look for code\n    const jsonStr = JSON.stringify($json);\n    const codeMatch = jsonStr.match(/```(?:python)?([\\s\\S]*?)```/);\n    rawCode = codeMatch ? codeMatch[1] : '';\n}\n\n// Clean the code by removing markdown code blocks\nrawCode = rawCode.replace(/```(?:python)?|```/g, '').trim();\n\n// ✅ Extract correct function name from LeetCode snippet\nconst codeSnippets = $('Fetch Test Cases').first()?.json?.data?.question?.codeSnippets || [];\nconst pythonSnippet = codeSnippets.find(snippet => snippet.lang === 'Python3')?.code || '';\nconst match = pythonSnippet.match(/def\\s+(\\w+)\\s*\\(/);\nconst functionName = match ? match[1] : 'solve';\n\n// ✅ Replace model's function name with correct one if needed\nif (!rawCode.includes(`def ${functionName}(`)) {\n    rawCode = rawCode.replace(/def\\s+\\w+\\s*\\(/, `def ${functionName}(`);\n}\n\n// ✅ Prepare input args\nconst rawInput = $('Fetch Test Cases').first()?.json?.data?.question?.sampleTestCase?.trim() || '';\nlet args = '';\n\nif (rawInput.startsWith('[')) {\n    args = rawInput;\n} else if (rawInput.includes('\\n')) {\n    const lines = rawInput.split('\\n').map(x => x.trim());\n    const parsed = lines.map(line => {\n        if (/^\\[.*\\]$/.test(line)) return line;\n        if (/^\\d(\\s+\\d+)*$/.test(line)) {\n            const arr = line.split(/\\s+/).map(Number);\n            return `[${arr.join(',')}]`;\n        }\n        return line;\n    });\n    args = parsed.join(', ');\n} else {\n    args = rawInput;\n}\n\n// ✅ Check if typing imports needed (but don't duplicate)\nlet typesToImport = [];\nif (rawCode.includes('List[') && !rawCode.includes('from typing import') && !rawCode.includes('import List')) {\n    typesToImport.push('List');\n}\nif (rawCode.includes('Dict[') && !rawCode.includes('Dict')) typesToImport.push('Dict');\nif (rawCode.includes('Set[') && !rawCode.includes('Set')) typesToImport.push('Set');\nif (rawCode.includes('Tuple[') && !rawCode.includes('Tuple')) typesToImport.push('Tuple');\nif (rawCode.includes('Optional[') && !rawCode.includes('Optional')) typesToImport.push('Optional');\n\n// Remove duplicates\ntypesToImport = [...new Set(typesToImport)];\n\nlet importLine = '';\nif (typesToImport.length > 0 && !rawCode.includes('from typing import')) {\n    importLine = `from typing import ${typesToImport.join(', ')}\\n\\n`;\n}\n\n// Add other common imports if needed and not present\nlet additionalImports = '';\nif (rawCode.includes('collections.') && !rawCode.includes('import collections')) {\n    additionalImports += 'import collections\\n';\n}\nif (rawCode.includes('heapq.') && !rawCode.includes('import heapq')) {\n    additionalImports += 'import heapq\\n';\n}\nif (rawCode.includes('math.') && !rawCode.includes('import math')) {\n    additionalImports += 'import math\\n';\n}\n\nconst finalCode = `${importLine}${additionalImports}${rawCode}\\n\\nprint(Solution().${functionName}(${args}))`;\n\nreturn [\n    {\n        json: {\n            code: finalCode,\n            functionName: functionName,\n            debug: {\n                originalFormat: $json.content ? 'gemini' : 'openai',\n                codeExtracted: rawCode.length > 0,\n                argsGenerated: args\n            }\n        }\n    }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        528
+      ],
+      "id": "40770ea4-7d00-4099-b267-ba27f8bdcf7f",
+      "name": "python patch imports"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get generated code from previous node\nconst code = $('python patch imports').first()?.json?.code || '';\n\n// Extract correct function name from LeetCode's official code snippet\nconst codeSnippets = $('Fetch Test Cases').first()?.json?.data?.question?.codeSnippets || [];\nconst pythonSnippet = codeSnippets.find(snippet => snippet.lang === 'Python3')?.code || '';\nconst match = pythonSnippet.match(/def\\s+(\\w+)\\s*\\(/);\nconst leetCodeFunctionName = match ? match[1] : 'solve';\n\n// Replace first function definition in the generated code with the correct one\nconst patchedCode = code.replace(/def\\s+\\w+\\s*\\(/, `def ${leetCodeFunctionName}(`);\n\n// Return both patched code and function name\nreturn [\n  {\n    json: {\n      code: patchedCode,\n      functionName: leetCodeFunctionName\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        528
+      ],
+      "id": "e04ddffc-3568-4638-b33f-dda5dfebbf2d",
+      "name": "patch function name"
+    },
+    {
+      "parameters": {
+        "jsCode": "const globalData = $getWorkflowStaticData('global');\nglobalData.solutionCode = $json.solutionCode;\n\n// Also add timestamp for debugging\nglobalData.lastUpdated = new Date().toISOString();\nglobalData.workflowId = $workflow.id;\n\nconsole.log('Code stored successfully:', {\n  codeLength: $json.solutionCode?.length || 0,\n  timestamp: globalData.lastUpdated\n});\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        528
+      ],
+      "id": "5077b103-96bd-4a2e-a542-05dd5560e751",
+      "name": "Store Code in Global"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d898ede-033d-4d6e-ac9a-bd9bfc229ff5",
+              "name": "solutionCode",
+              "value": "={{ $('get submission info').first().json.solutionCode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2048,
+        528
+      ],
+      "id": "b2077225-fa63-46da-ae6d-f3e2b3b4eea5",
+      "name": "set solutioncode for global"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solve-daily",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        368,
+        112
+      ],
+      "id": "c4cb5143-5c68-4af5-b4d2-e28f0122d9a5",
+      "name": "Webhook",
+      "webhookId": "6f2350cb-4558-4f1d-a8fc-e6c5b244f6c9"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"code saved\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2496,
+        528
+      ],
+      "id": "11550986-d28c-4730-87ed-cf52e8c985c0",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "path": "leetcode-code",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        320,
+        1056
+      ],
+      "name": "Webhook Trigger",
+      "id": "9311ba3b-de3f-47c7-b428-f2da1a748bee",
+      "webhookId": "c70ca3af-4919-4253-b7f1-b8e3c2e6eb82"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access global static data\nconst globalData = $getWorkflowStaticData('global');\n\n// Get the stored code (or fallback)\nconst solutionCode = globalData.solutionCode || 'No code saved';\n\nreturn [{\n  json: { solutionCode }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        1056
+      ],
+      "id": "3cc33bfb-4166-42b3-a8a3-441a4ba35a42",
+      "name": "get saved code"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"solutionCode\": $json.solutionCode } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        768,
+        1056
+      ],
+      "name": "Respond to Webhook1",
+      "id": "83d3677c-b860-4f35-9397-5abe7153b423"
+    },
+    {
+      "parameters": {
+        "content": "WEBHOOK-1\n",
+        "height": 736,
+        "width": 2912,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -240,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "87f38240-033b-4352-ac25-8e1f89f6cf10",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "WEBHOOK-2\n",
+        "height": 256,
+        "width": 1184,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        960
+      ],
+      "typeVersion": 1,
+      "id": "ba352d04-5a0c-4809-9b6c-8558ffad6174",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        112
+      ],
+      "id": "5086a356-0fa2-468b-981f-dced17fc211a",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sJ3kVvBzzRgS6DcZ",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract Challenge Info": {
+      "main": [
+        [
+          {
+            "node": "Fetch Test Cases",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Full Problem Content": {
+      "main": [
+        [
+          {
+            "node": "Extract Expected Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Test Cases": {
+      "main": [
+        [
+          {
+            "node": "Get Full Problem Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Daily Challenge": {
+      "main": [
+        [
+          {
+            "node": "Extract Challenge Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare piston payload": {
+      "main": [
+        [
+          {
+            "node": "Build piston payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build piston payload": {
+      "main": [
+        [
+          {
+            "node": "Run on Piston",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run on Piston": {
+      "main": [
+        [
+          {
+            "node": "Test Result Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Result Parser": {
+      "main": [
+        [
+          {
+            "node": "Parse and test result from piston",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse and test result from piston": {
+      "main": [
+        [
+          {
+            "node": "get submission info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Expected Output": {
+      "main": [
+        [
+          {
+            "node": "send prompt to ai model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send prompt to ai model": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get submission info": {
+      "main": [
+        [
+          {
+            "node": "set solutioncode for global",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "python patch imports": {
+      "main": [
+        [
+          {
+            "node": "patch function name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "patch function name": {
+      "main": [
+        [
+          {
+            "node": "Prepare piston payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Code in Global": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set solutioncode for global": {
+      "main": [
+        [
+          {
+            "node": "Store Code in Global",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Fetch Daily Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "get saved code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get saved code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "python patch imports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d5f281f9-ffd4-460b-8087-87916414c371",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c6fb417a44cc395d779188c68ab28a133fa3f3a0f6a774452108eccbad578490"
+  },
+  "id": "1g5kj4laWzosHHxo",
+  "tags": []
+}
